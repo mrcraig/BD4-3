@@ -1,4 +1,4 @@
-SELECT aid, COUNT(rid), collect_set(rid)
+SELECT aid, COUNT(rid) 
 FROM hdfs_file_H 
 WHERE type='REVISION' 
 AND ts >='${hiveconf:start_date}' 
