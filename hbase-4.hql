@@ -7,13 +7,11 @@ CREATE TEMPORARY FUNCTION get_aid as 'com.UDF.AIDUDF';
 CREATE TEMPORARY FUNCTION get_rid as 'com.UDF.RIDUDF';
 CREATE TEMPORARY FUNCTION get_ts as 'com.UDF.TSUDF';
 
-DROP TABLE IF EXISTS hbase_table_H;
-CREATE EXTERNAL TABLE hbase_table_H(key BINARY, ts BIGINT) STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,WD:TS#b") TBLPROPERTIES ("hbase.table.name" = "BD4Project2Sample");
-
-SELECT get_aid(key) as aid,COUNT(get_rid(key)) as counter,sort_array(collect_set(get_rid(key))) as revs
+SELECT get_aid(key) as aid, COUNT(get_rid(key)) as numrevs 
 FROM hbase_table_H 
-WHERE
+WHERE 
 get_ts(ts) >='${hiveconf:start_date}' 
 AND get_ts(ts) <='${hiveconf:end_date}' 
 GROUP BY get_aid(key)
-ORDER BY aid;
+ORDER BY numrevs DESC, aid ASC
+LIMIT ${hiveconf:numdisplay}

@@ -6,4 +6,4 @@ ON
 Q1.aid = Q2.aid1
 WHERE
 Q1.ts = Q2.timey
-ORDER by aid
+ORDER by aid;
