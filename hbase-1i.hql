@@ -11,5 +11,8 @@ DROP TABLE IF EXISTS hbase_table_Hi;
 CREATE EXTERNAL TABLE hbase_table_Hi(key BINARY, artid BINARY, revid BINARY) STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,q1:in_artid,q1:in_revid") TBLPROPERTIES ("hbase.table.name" = "1002386c");
 
 
-SELECT get_aid(artid),get_rid(revid),get_ts(key)
-FROM hbase_table_Hi;
+SELECT get_aid(artid) as aid, get_rid(revid) as rid, get_ts(key) as ts
+FROM hbase_table_Hi
+WHERE get_ts(key) >='${hiveconf:start_date}' 
+AND get_ts(key) <='${hiveconf:end_date}' 
+ORDER BY aid,rid;
